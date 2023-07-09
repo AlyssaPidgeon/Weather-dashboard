@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="./Assets/CSS/style.css" />
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.min.js"
+      integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav>
+      <h1>Weather Dashboard</h1>
+    </nav>
+    <form class="userInput">
+      <h2>Search for a City:</h2>
+      <br />
+      <input
+        class="Search"
+        type="text"
+        name="location"
+        id="location"
+        placeholder="Darwin"
+      /><br />
+    </form>
+    <div id="currentweather">
+      <p id="location"></p>
+      <p id="date"></p>
+      <img id="ImageCurrent" src="" alt="" />
+      <p id="Temperature: "></p>
+      <p id="Wind: "></p>
+      <p id="Humidity: "></p>
+    </div>
+    <section>
+      <h3>5-Day Forecast:</h3>
+      <div id="dayOne">
+        <p id="f-date"></p>
+        <img id="f-image" src="" alt="" />
+        <p id="f-temp"></p>
+        <p id="f-Wind"></p>
+        <p id="f-humidity"></p>
+      </div>
+      <div id="dayTwo"></div>
+      <div id="dayThree"></div>
+      <div id="dayFour"></div>
+      <div id="dayFive"></div>
+    </section>
+    <script src="./Assets/JS/script.js"></script>
+  </body>
+</html>
