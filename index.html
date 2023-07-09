@@ -10,6 +10,11 @@
       integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
       crossorigin="anonymous"
     ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+      integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <nav>
@@ -22,31 +27,24 @@
         class="Search"
         type="text"
         name="location"
-        id="location"
+        id="locationInput"
         placeholder="Darwin"
       /><br />
     </form>
+    <button id="submitButton" type="submit" form="form1" value="Submit">
+      Submit
+    </button>
     <div id="currentweather">
       <p id="location"></p>
       <p id="date"></p>
-      <img id="ImageCurrent" src="" alt="" />
-      <p id="Temperature: "></p>
-      <p id="Wind: "></p>
-      <p id="Humidity: "></p>
+      <img id="image-current" src="" alt="" />
+      <p id="temperature"></p>
+      <p id="wind"></p>
+      <p id="humidity"></p>
     </div>
-    <section>
+    <section id="recentSearches"></section>
+    <section id="future-forecast">
       <h3>5-Day Forecast:</h3>
-      <div id="dayOne">
-        <p id="f-date"></p>
-        <img id="f-image" src="" alt="" />
-        <p id="f-temp"></p>
-        <p id="f-Wind"></p>
-        <p id="f-humidity"></p>
-      </div>
-      <div id="dayTwo"></div>
-      <div id="dayThree"></div>
-      <div id="dayFour"></div>
-      <div id="dayFive"></div>
     </section>
     <script src="./Assets/JS/script.js"></script>
   </body>

@@ -1,193 +1,151 @@
 apiKey = "45eb4c20171c3bd2b2a402297a8c7fea";
-//retrieve geographical coordinates given city name -convert name of location to geographical coordinates (lat, lon)
 
-//API call for coordinates by location name:
 //user input text select:
-let searchInput = document.querySelector('input[name="location"]');
-
+//.value to addign input value to searchinput
+var searchInput = document.getElementById("locationInput");
+var submitButton = document.getElementById("submitButton");
 //create function to fetch API data from user Input
 
-function locationAPI() {
-  //set limit to 4 - this is the number of locations in the API response:
-  const limit = "4";
-  //geocoding API:
-  // const locationURL = `http://api.openweathermap.org/geo/1.0/direct?q=${city name},${state code},${country code}&limit=${limit}&appid=${apiKey}`;
-  //for searchInput
-  const locationURL = `http://api.openweathermap.org/geo/1.0/direct?q=${searchInput}&limit=${limit}&appid=${apiKey}`;
-  // test locationURL = http://api.openweathermap.org/geo/1.0/direct?q=Darwin&limit=4&appid=45eb4c20171c3bd2b2a402297a8c7fea
+//event handler onto search field to retrieve search ersults adn JSON request (?API automatically JSON format)
 
-  fetch(locationURL)
+submitButton.addEventListener("click", function (event) {
+  event.preventDefault();
+  const userInput = searchInput.value;
+  console.log(userInput);
+  fetchAPI(userInput);
+  fiveDayForecast(userInput);
+});
+
+function fetchAPI() {
+  const queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInput.value}&units=imperial&appid=${apiKey}&units=metric`;
+  console.log(searchInput.value);
+  //https://api.openweathermap.org/data/2.5/weather?q=Darwin&units=imperial&appid=45eb4c20171c3bd2b2a402297a8c7fea
+  fetch(queryURL)
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
       console.log(data);
+      //call data funtion below?
+      displayCurrent(data);
     });
 }
-
-//event handler onto search field to retrieve search ersults adn JSON request? (?API automatically JSON format)
-
-searchInput.addEventListener("input", function (event) {
-  const userInput = searchInput.value;
-  locationAPI(userInput);
-});
-
-//this retrieves the lat and lon to use in the queryURL below:
-
-var lat = "";
-var lon = "";
-const queryURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-// test API works:https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=45eb4c20171c3bd2b2a402297a8c7fea
-fetch(queryURL)
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    console.log(data);
-    //call data funtion below?
-    displayCurrent(data);
-  });
-
 //present current conditions for the city
-const cityName = document.getElementById("#location");
-const currentDate = document.getElementById("#date");
-const imageCurrentWeather = document.getElementById("#ImageCurrent");
-const temperature = document.getElementById("#Temperature: ");
-const wind = document.getElementById("#Wind: ");
-const humidity = document.getElementById("#Humidity: ");
-//present city name, date, icon representation of weather conditions, temperature, humidty and wind speed
-//render data to elements on HTML
+const cityName = document.getElementById("location");
+const currentDate = document.getElementById("date");
+const imageCurrentWeather = document.getElementById("image-current");
+const temperature = document.getElementById("temperature");
+const wind = document.getElementById("wind");
+const humidity = document.getElementById("humidity");
+// present city name, date, icon representation of weather conditions, temperature, humidty and wind speed
+// render data to elements on HTML
 function displayCurrent(data) {
-  cityName.innerHTML = "";
-  currentDate.innerHTML = "";
-  imageCurrentWeather.innerHTML = "";
-  temperature.innerHTML = "";
-  wind.innerHTML = "";
-  humidity.innerHTML = "";
-
-  //assign data array to element
-
-  //create the new elements:
-  if (data.length > 0) {
-    //use forEach function for each new element to be displayed from array:
-    data.array.forEach((element) => {
-      // data array from API; city name = 'name'
-      const nameLocation = element.name;
-
-      //data array from API: current date = ?timezone
-
-      //data array from API; weather icon is -->weather --> icon
-      const weatherIcon = element.icon;
-
-      //data array from API: temperature is temp
-      const tempCurrent = element.temp;
-
-      //data array from API: wind is speed (?speed in what units?)
-      const windCurrent = element.wind;
-
-      //data array from API: humidty is humidity:
-      const humidCurrent = element.humidity;
-
-      //create city title element for cityName:
-      const nameElement = document.createElement("h2");
-      nameElement.textContent = nameLocation;
-      cityName.appendChild(nameElement);
-      //create currentDate element:
-
-      //create imageCurrentWeather element:
-      const imgElement = document.createElement("img");
-      imgElement.src = weatherIcon;
-      imgElement.alt = "Weather image icon";
-      weatherIcon.appendChild(imgElement);
-
-      //create temperature title element for tempCurrent:
-      const tempElement = document.createElement("h3");
-      tempElement.textContent = tempCurrent;
-      tempCurrent.appendChild(tempElement);
-
-      //create wind title element for windCurrent:
-      const windElement = document.createElement("h3");
-      windElement.textContent = windCurrent;
-      windCurrent.appendChild(windElement);
-
-      //create humidity title element for humidCurrent:
-      const humidElement = document.createElement("h3");
-      humidElement.textContent = humidCurrent;
-      humidCurrent.appendChild(humidElement);
-    });
-  }
+  cityName.innerText = "Location: " + data.name;
+  //how to access icon??
+  imageCurrentWeather.innerText = data.weather[0].icon;
+  //
+  temperature.innerText = "Temperature: " + data.main.temp;
+  wind.innerText = "Wind Speed: " + data.wind.speed;
+  humidity.innerText = "Humidity: " + data.main.humidity;
+  var currentDateDJ = data.timezone;
+  var currentDateDJ = dayjs().format("MMM D, YYYY, hh:mm:ss");
+  $("#date").text(currentDateDJ);
 }
 
 // present future conditions for the city
 //present 5 day forecast displaying date, icon rep of weather conditions, the temperature, the wind speed, and the humidity
-const queryForecastURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-// test API works:https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=45eb4c20171c3bd2b2a402297a8c7fea
-fetch(queryForecastURL)
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    console.log(data);
-    displayFuture(data);
-  });
-const futureDate = document.getElementById("#f-date");
-const imgFutureWeather = document.getElementById("#f-image");
-const futureTemperature = document.getElementById("#f-temp");
-const futureWind = document.getElementById("#f-wind");
-const futureHumidity = document.getElementById("#f-humidity");
+function fiveDayForecast() {
+  console.log(searchInput.value);
+  const queryForecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${searchInput.value}&appid=${apiKey}&units=metric`;
+  // test API works:https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=45eb4c20171c3bd2b2a402297a8c7fea
+  fetch(queryForecastURL)
+    .then(function (response) {
+      console.log(response);
+      return response.json();
+    })
+    .then(function (data) {
+      console.log(data);
+      displayFuture(data);
+    });
+}
+// const futureDate = document.getElementById("f-date");
+// const imgFutureWeather = document.getElementById("#f-image");
+// const futureTemperature = document.getElementById("#f-temp");
+// const futureWind = document.getElementById("#f-wind");
+// const futureHumidity = document.getElementById("#f-humidity");
+var futureForecast = document.getElementById("future-forecast");
 
 function displayFuture(data) {
-  futureDate.innerHTML = "";
-  imgFutureWeather.innerHTML = "";
-  futureTemperature.innerHTML = "";
-  futureWind.innerHTML = "";
-  futureHumidity.innerHTML = "";
+  console.log(data);
+  // futureDate.innerHTML = "";
+  // imgFutureWeather.innerHTML = "";
+  // futureTemperature.innerHTML = "";
+  // futureWind.innerHTML = "";
+  // futureHumidity.innerHTML = "";
 
-  //assign data array to element
-  //create the new elements:
-  if (data.length > 0) {
-    //use forEach function for each new element to be displayed from array:
-    data.array.forEach((element) => {
-      // find data endpoint for date -?time???
-      const date = element.time;
-      //data array from API; weather icon is -->weather --> icon
-      const futureWeatherIcon = element.icon;
+  for (let i = 0; i < 5; i++) {
+    //step on e- create first element of this day (e.g. temp)
+    const dateElement = document.createElement("h4");
+    dateElement.innerText = "Date: " + data.list[0].dt_txt;
+    dateElement.innerText = "Date: " + data.list[1].dt_txt;
+    dateElement.innerText = "Date: " + data.list[2].dt_txt;
+    dateElement.innerText = "Date: " + data.list[3].dt_txt;
+    dateElement.innerText = "Date: " + data.list[4].dt_txt;
+    document.getElementById("future-forecast").appendChild(dateElement);
 
-      //data array from API: temperature is temp
-      const futureTemp = element.temp;
+    // const futureImgElement = document.createElement("img");
+    // futureImgElement.src = futureWeatherIcon;
+    // futureImgElement.alt = "Weather image icon";
+    // imgFutureWeather.appendChild(futureImgElement);
 
-      //data array from API: wind is speed (?speed in what units?)
-      const futureWind = element.wind;
+    const tempElementFuture = document.createElement("h4");
+    tempElementFuture.innerText = "Temperature: " + data.list[0].main.temp;
+    document.getElementById("future-forecast").appendChild(tempElementFuture);
 
-      //data array from API: humidty is humidity:
-      const futureHumid = element.humidity;
+    const futureWindElement = document.createElement("h4");
+    futureWindElement.innerText = "Wind Speed: " + data.list[0].wind.speed;
+    document.getElementById("future-forecast").appendChild(futureWindElement);
 
-      //create futureDate element:
-      const dateElement = document.createElement("h4");
-      dateElement.textContent = date;
-      futureDate.appendChild(dateElement);
+    const futureHumidElement = document.createElement("h4");
+    // futureHumidElement.textContent = futureHumidity;
+    futureHumidElement.innerText =
+      "Humidity level: " + data.list[0].main.humidity;
+    // futureHumidity.appendChild(futureHumidElement);
+    document.getElementById("future-forecast").appendChild(futureHumidElement);
+    //step two - give elements values based off of index (e.g. first element = 0)
 
-      //create imageFutureWeather element:
-      const futureImgElement = document.createElement("img");
-      futureImgElement.src = futureWeatherIcon;
-      futureImgElement.alt = "Weather image icon";
-      imgFutureWeather.appendChild(futureImgElement);
+    //create step 3 append to HTML (section id - future-forecast)
+    data.list[i].main;
+    console.log(data.list[i].main);
 
-      //create temperature title element for futureTemp:
-      const tempElementFuture = document.createElement("h4");
-      tempElementFuture.textContent = futureTemp;
-      futureTemperature.appendChild(tempElementFuture);
-
-      //create wind title element
-      const futureWindElement = document.createElement("h4");
-      futureWindElement.textContent = futureWind;
-      futureWind.appendChild(futureWindElement);
-
-      //create humidity title element for humidCurrent:
-      const futureHumidElement = document.createElement("h4");
-      futureHumidElement.textContent = futureHumid;
-      futureHumidity.appendChild(futureHumidElement);
-    });
+    //append to HTML: -futureforecast
+    //   futureDate = "Date: " + data.list.dt_txt;
+    //   futureTemperature.innerText = "Temperature: " + data.list.main.temp;
+    //   futureWind.innerText = "Wind speed: " + data.list.wind.speed;
+    //   futureHumidity.innerText = "Humidity level: " + data.list.main.humidity;
   }
 }
-//search history - able to click on city in search history to present current and future conditions.
+
+// //search history - able to click on city in search history to present current and future conditions.
+// const displaySearch = getElementById("#recentSearches");
+
+// //searchInput -is document selection for userInput
+
+// //event listener to save search from userInput:
+// searchInput.addEventListener("input", function (event) {
+//   event.preventDefault();
+//   var userInput = document.getElementById("#location").value;
+
+//   if (userInput === "") {
+//     displayMessage("Error", "Search cannot be blank");
+//   } else {
+//     localStorage.setItem("userInput", userInput);
+//     renderLastSearch();
+//   }
+// });
+
+// //function to render last search:
+// function renderLastSearch() {
+//   var search = localStorage.getItem("userInput");
+//   displaySearch.textContent = search;
+// }
