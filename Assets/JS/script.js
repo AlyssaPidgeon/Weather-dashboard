@@ -33,7 +33,7 @@ function fetchAPI() {
 //present current conditions for the city
 const cityName = document.getElementById("location");
 const currentDate = document.getElementById("date");
-const imageCurrentWeather = document.getElementById("image-current");
+var imageCurrentWeather = document.getElementById("image-current");
 const temperature = document.getElementById("temperature");
 const wind = document.getElementById("wind");
 const humidity = document.getElementById("humidity");
@@ -41,12 +41,17 @@ const humidity = document.getElementById("humidity");
 // render data to elements on HTML
 function displayCurrent(data) {
   cityName.innerText = "Location: " + data.name;
-  //how to access icon??
-  imageCurrentWeather.innerText = data.weather[0].icon;
+
+  let icon = data.weather[0].icon;
+  let url = "https://openweathermap.org/img/wn/q=${icon}@2x.png";
+  //how to access icon?? - icon ID value
+  // imageCurrentWeather = data.weather[0].icon;
+
+  console.log(url);
   //
   temperature.innerText = "Temperature: " + data.main.temp;
-  wind.innerText = "Wind Speed: " + data.wind.speed;
-  humidity.innerText = "Humidity: " + data.main.humidity;
+  wind.innerText = "Wind Speed (meter/second): " + data.wind.speed;
+  humidity.innerText = "Humidity (%): " + data.main.humidity;
   var currentDateDJ = data.timezone;
   var currentDateDJ = dayjs().format("MMM D, YYYY, hh:mm:ss");
   $("#date").text(currentDateDJ);
@@ -68,61 +73,40 @@ function fiveDayForecast() {
       displayFuture(data);
     });
 }
-// const futureDate = document.getElementById("f-date");
-// const imgFutureWeather = document.getElementById("#f-image");
-// const futureTemperature = document.getElementById("#f-temp");
-// const futureWind = document.getElementById("#f-wind");
-// const futureHumidity = document.getElementById("#f-humidity");
+
 var futureForecast = document.getElementById("future-forecast");
 
 function displayFuture(data) {
   console.log(data);
-  // futureDate.innerHTML = "";
-  // imgFutureWeather.innerHTML = "";
-  // futureTemperature.innerHTML = "";
-  // futureWind.innerHTML = "";
-  // futureHumidity.innerHTML = "";
 
   for (let i = 0; i < 5; i++) {
-    //step on e- create first element of this day (e.g. temp)
     const dateElement = document.createElement("h4");
-    dateElement.innerText = "Date: " + data.list[0].dt_txt;
-    dateElement.innerText = "Date: " + data.list[1].dt_txt;
-    dateElement.innerText = "Date: " + data.list[2].dt_txt;
-    dateElement.innerText = "Date: " + data.list[3].dt_txt;
-    dateElement.innerText = "Date: " + data.list[4].dt_txt;
+    dateElement.innerText = "Date: " + data.list[i].dt_txt;
+    console.log(data.list[i].dt_txt);
     document.getElementById("future-forecast").appendChild(dateElement);
 
-    // const futureImgElement = document.createElement("img");
-    // futureImgElement.src = futureWeatherIcon;
-    // futureImgElement.alt = "Weather image icon";
-    // imgFutureWeather.appendChild(futureImgElement);
+    const futureIconElement = document.createElement("icon");
+    futureIconElement.src = futureWeatherIcon;
+    futureIconElement.alt = "Weather image icon";
+    futureIconElement.innerText = data.list[i].weather.icon;
+    document.getElementById("future-forecast").appendChild(futureIconElement);
 
     const tempElementFuture = document.createElement("h4");
-    tempElementFuture.innerText = "Temperature: " + data.list[0].main.temp;
+    tempElementFuture.innerText =
+      "Temperature (Celsius): " + data.list[i].main.temp;
     document.getElementById("future-forecast").appendChild(tempElementFuture);
 
     const futureWindElement = document.createElement("h4");
-    futureWindElement.innerText = "Wind Speed: " + data.list[0].wind.speed;
+    futureWindElement.innerText =
+      "Wind Speed (meter/second): " + data.list[i].wind.speed;
     document.getElementById("future-forecast").appendChild(futureWindElement);
 
     const futureHumidElement = document.createElement("h4");
-    // futureHumidElement.textContent = futureHumidity;
     futureHumidElement.innerText =
-      "Humidity level: " + data.list[0].main.humidity;
-    // futureHumidity.appendChild(futureHumidElement);
+      "Humidity level (%): " + data.list[i].main.humidity;
     document.getElementById("future-forecast").appendChild(futureHumidElement);
-    //step two - give elements values based off of index (e.g. first element = 0)
-
-    //create step 3 append to HTML (section id - future-forecast)
     data.list[i].main;
     console.log(data.list[i].main);
-
-    //append to HTML: -futureforecast
-    //   futureDate = "Date: " + data.list.dt_txt;
-    //   futureTemperature.innerText = "Temperature: " + data.list.main.temp;
-    //   futureWind.innerText = "Wind speed: " + data.list.wind.speed;
-    //   futureHumidity.innerText = "Humidity level: " + data.list.main.humidity;
   }
 }
 
@@ -131,18 +115,18 @@ function displayFuture(data) {
 
 // //searchInput -is document selection for userInput
 
-// //event listener to save search from userInput:
-// searchInput.addEventListener("input", function (event) {
-//   event.preventDefault();
-//   var userInput = document.getElementById("#location").value;
+//event listener to save search from userInput:
+searchInput.addEventListener("input", function (event) {
+  event.preventDefault();
+  var userInput = document.getElementById("#location").value;
 
-//   if (userInput === "") {
-//     displayMessage("Error", "Search cannot be blank");
-//   } else {
-//     localStorage.setItem("userInput", userInput);
-//     renderLastSearch();
-//   }
-// });
+  if (userInput === "") {
+    displayMessage("Error", "Search cannot be blank");
+  } else {
+    localStorage.setItem("userInput", userInput);
+    renderLastSearch();
+  }
+});
 
 // //function to render last search:
 // function renderLastSearch() {
