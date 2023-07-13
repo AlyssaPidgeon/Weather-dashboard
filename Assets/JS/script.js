@@ -1,7 +1,6 @@
 apiKey = "45eb4c20171c3bd2b2a402297a8c7fea";
 
 //user input text select:
-//.value to addign input value to searchinput
 var searchInput = document.getElementById("locationInput");
 var submitButton = document.getElementById("submitButton");
 //create function to fetch API data from user Input
@@ -12,8 +11,16 @@ submitButton.addEventListener("click", function (event) {
   event.preventDefault();
   const userInput = searchInput.value;
   console.log(userInput);
+  // const userInput = searchInput.value;
+
+  //save to localstorage:
+  localStorage.setItem("saved-search", JSON.stringify(userInput));
+  console.log(userInput);
+
   fetchAPI(userInput);
   fiveDayForecast(userInput);
+  // saveLastSearch();
+  renderLastSearch();
 });
 
 function fetchAPI() {
@@ -118,16 +125,14 @@ function displayFuture(data) {
   }
 }
 
-// // //search history - able to click on city in search history to present current and future conditions.
-// // const displaySearch = getElementById("#recentSearches");
+// //search history - able to click on city in search history to present current and future conditions.
+// const displaySearch = document.getElementById("#recentSearches");
 
-// // //searchInput -is document selection for userInput
+// //searchInput -is document selection for userInput
 
-// //event listener to save search from userInput:
-// searchInput.addEventListener("input", function (event) {
-//   event.preventDefault();
-//   var userInput = document.getElementById("#location").value;
-
+//event listener to save search from userInput:
+// searchInput.addEventListener("click", function (event) {
+//   console.log(userInput);
 //   if (userInput === "") {
 //     displayMessage("Error", "Search cannot be blank");
 //   } else {
@@ -136,8 +141,48 @@ function displayFuture(data) {
 //   }
 // });
 
+//local storage: saved-search
+
+const displaySearch = document.getElementById("recentSearches");
+//function to render last search:
+function renderLastSearch() {
+  var lastSearch = JSON.parse(localStorage.getItem("saved-search"));
+  console.log(lastSearch);
+  // if (lastSearch !== null) {
+  displaySearch.innerHTML = lastSearch;
+  // } else {
+  // return;}
+}
+//use this function to call the last search:
+// function init() {
+//   renderLastSearch();
+// }
+// init();
+
+// // const userInput = searchInput.value;
+
+// function saveLastSearch() {
+//   console.log(userInput);
+//   var saveSearch = userInput.value;
+//   localStorage.setItem("saved-search", JSON.stringify(saveSearch));
+//   console.log(saveSearch);
+// }
+
+// function to save search
+// function saveLastSearch() {
+//   var searchSave = displaySearch.value;
+//   console.log(searchSave);
+//   localStorage.setItem("searchSave", JSON.stringify(searchSave));
+// }
+
 // //function to render last search:
 // function renderLastSearch() {
+
+//   var userInput = cityName;
+//   console.log(userInput);
+//   localStorage.setItem("userInput", userInput);
+
 //   var search = localStorage.getItem("userInput");
+//   console.log(search);
 //   displaySearch.textContent = search;
 // }

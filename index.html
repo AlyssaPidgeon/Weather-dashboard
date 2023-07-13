@@ -15,37 +15,86 @@
       integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
       crossorigin="anonymous"
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
   </head>
   <body>
-    <nav>
-      <h1>Weather Dashboard</h1>
-    </nav>
-    <form class="userInput">
-      <h2>Search for a City:</h2>
-      <br />
-      <input
-        class="Search"
-        type="text"
-        name="location"
-        id="locationInput"
-        placeholder="Darwin"
-      /><br />
-    </form>
-    <button id="submitButton" type="submit" form="form1" value="Submit">
-      Submit
-    </button>
-    <div id="currentweather">
-      <p id="location"></p>
-      <p id="date"></p>
-      <img src="" id="image-current" alt="Weather Icon Image" />
-      <p id="temperature"></p>
-      <p id="wind"></p>
-      <p id="humidity"></p>
+    <div class="hero is-primary is-small">
+      <div class="hero-body"></div>
+      <div class="container has-text-right"></div>
+      <h1 class="title is-1 is-spaced">Weather Dashboard</h1>
     </div>
-    <section id="recentSearches"></section>
-    <section id="future-forecast">
-      <h3>5-Day Forecast:</h3>
-    </section>
+
+    <div class="tile is-ancestor">
+      <!-- add bulma CSS as tile for search funtion: -->
+      <section class="title is-vertical is-8">
+        <div class="title">
+          <div class="title is-parent is-vertical">
+            <div class="title is-child box notification is-success">
+              <form class="userInput">
+                <h2 id="title-2">Search for a City:</h2>
+                <br />
+                <input
+                  class="Search"
+                  type="text"
+                  name="location"
+                  id="locationInput"
+                  placeholder="Darwin"
+                /><br />
+              </form>
+              <button
+                id="submitButton"
+                type="submit"
+                form="form1"
+                value="Submit"
+                class="bulma-control-mixin is-medium"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+         <!-- add Bulma CSS for previous search selectioN:  -->
+        <section class="title is-vertical is-8">
+          <div class="title">
+            <div class="title is-parent">
+              <div class="title is-child  box notification is-info">
+                <div class="column">
+                  
+                  <p>Select your recent searches</p>
+                  <div id="recentSearches"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <section class="section is-medium"></section>
+      </section>  
+           <!-- ADD bulma CSS tile to display current weather for entered location:  -->
+      <section class="title is-parent">
+            <div class="title is-child box notification is-danger">
+              <div id="currentweather">
+                <p class="title is-3" id="location"></p>
+                <p class="subtitle is-3" id="date"></p>
+                <img src="" id="image-current" alt="Weather Icon Image" />
+                <p class="subtitle is 4" id="temperature"></p>
+                <p class="subtitle is 4" id="wind"></p>
+                <p class="subtitle is 4" id="humidity"></p>
+              </div>
+            </div>
+          <!-- present 5-day forecast in tall tile bulma styling:  -->
+          <div class="tile is-parent">
+            <div class="title is-child box notification is-success">
+              <div class="content"></div>
+                <div id="future-forecast">
+                  <h3 class="title">5-Day Forecast:</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+      </section>
+    </div>
     <script src="./Assets/JS/script.js"></script>
   </body>
 </html>
