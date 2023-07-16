@@ -24,20 +24,20 @@
     <div class="hero is-primary is-small">
       <div class="hero-body"></div>
       <div class="container has-text-right"></div>
-      <h1 class="title is-1 is-spaced">Weather Dashboard</h1>
+      <h1 class="title is-1 is-spaced ">Weather Dashboard</h1>
     </div>
 
     <div class="tile is-ancestor">
       <!-- add bulma CSS as tile for search funtion: -->
-      <section class="title is-vertical is-8">
-        <div class="title">
-          <div class="title is-parent is-vertical">
-            <div class="title is-child box notification is-success">
+      <section class="tile is-vertical is-4">
+        <div class="tile">
+          <div class="tile is-parent is-vertical">
+            <div class="tile is-child box notification is-warning">
               <form class="userInput">
-                <h2 id="title-2">Search for a City:</h2>
+                <h2 class="title">Search for a City:</h2>
                 <br />
                 <input
-                  class="Search"
+                  class="Search input is-hovered is-rounded is-medium is-danger"
                   type="text"
                   name="location"
                   id="locationInput"
@@ -49,44 +49,41 @@
                 type="submit"
                 form="form1"
                 value="Submit"
-                class="bulma-control-mixin is-medium"
+                class="button is-danger is-light is-medium is-fullwidth is-outlied is-rounded is-hovered"
               >
                 Submit
               </button>
             </div>
-          </div>
-        </div>
-         <!-- add Bulma CSS for previous search selectioN:  -->
-        <section class="title is-vertical is-8">
-          <div class="title">
-            <div class="title is-parent">
-              <div class="title is-child  box notification is-info">
-                <div class="column">
-                  
-                  <p>Select your recent searches</p>
-                  <div id="recentSearches"></div>
-                </div>
-              </div>
+          <!-- </div>
+        </div> -->
+         <!-- add Bulma CSS for previous search selection to sit underneath seach tile:  -->
+            <div class="tile is-child box notification is-info">
+               <div class="column">
+                  <p class="title">Select your recent searches:</p>
+                   <div id="recent-searches">
+                   </div>
+                
+               </div>
             </div>
-          </div>
-        <section class="section is-medium"></section>
       </section>  
-           <!-- ADD bulma CSS tile to display current weather for entered location:  -->
-      <section class="title is-parent">
-            <div class="title is-child box notification is-danger">
-              <div id="currentweather">
-                <p class="title is-3" id="location"></p>
-                <p class="subtitle is-3" id="date"></p>
-                <img src="" id="image-current" alt="Weather Icon Image" />
-                <p class="subtitle is 4" id="temperature"></p>
-                <p class="subtitle is 4" id="wind"></p>
-                <p class="subtitle is 4" id="humidity"></p>
+           <!-- ADD bulma CSS tile to display current weather for entered location next to side section:  -->
+      <section class="tile is-parent">
+            <div class="tile is-child box notification is-danger is-8">
+              <div class="content">
+                <div id="currentweather">
+                  <p class="title is-3" id="location"></p>
+                  <p class="subtitle is-3" id="date"></p>
+                  <img src="" id="image-current"/>
+                  <p class="subtitle is 4" id="temperature"></p>
+                  <p class="subtitle is 4" id="wind"></p>
+                  <p class="subtitle is 4" id="humidity"></p>
+                </div>
               </div>
             </div>
           <!-- present 5-day forecast in tall tile bulma styling:  -->
           <div class="tile is-parent">
-            <div class="title is-child box notification is-success">
-              <div class="content"></div>
+            <div class="tile is-child box notification is-success">
+              <div class="content">
                 <div id="future-forecast">
                   <h3 class="title">5-Day Forecast:</h3>
                 </div>

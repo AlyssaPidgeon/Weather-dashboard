@@ -7,25 +7,9 @@ var submitButton = document.getElementById("submitButton");
 
 //event handler onto search field to retrieve search ersults adn JSON request (?API automatically JSON format)
 
-submitButton.addEventListener("click", function (event) {
-  event.preventDefault();
-  const userInput = searchInput.value;
-  console.log(userInput);
-  // const userInput = searchInput.value;
-
-  //save to localstorage:
-  localStorage.setItem("saved-search", JSON.stringify(userInput));
-  console.log(userInput);
-
-  fetchAPI(userInput);
-  fiveDayForecast(userInput);
-  // saveLastSearch();
-  renderLastSearch();
-});
-
-function fetchAPI() {
-  const queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInput.value}&units=imperial&appid=${apiKey}&units=metric`;
-  console.log(searchInput.value);
+function fetchAPI(coordinate) {
+  const queryURL = `https://api.openweathermap.org/data/2.5/weather?q=${coordinate}&units=metric&appid=${apiKey}`;
+  console.log(coordinate);
   //https://api.openweathermap.org/data/2.5/weather?q=Darwin&units=imperial&appid=45eb4c20171c3bd2b2a402297a8c7fea
   fetch(queryURL)
     .then(function (response) {
@@ -58,20 +42,20 @@ function displayCurrent(data) {
 
   console.log(url);
   //
-  temperature.innerText = "Temperature: " + data.main.temp;
+  temperature.innerText = "Temperature: " + data.main.temp + "℃";
   wind.innerText = "Wind Speed (meter/second): " + data.wind.speed;
   humidity.innerText = "Humidity (%): " + data.main.humidity;
   var currentDateDJ = data.timezone;
-  var currentDateDJ = dayjs().format("MMM D, YYYY, hh:mm:ss");
+  var currentDateDJ = dayjs().format("DD MMMM YYYY, hh:mm:ss");
   $("#date").text(currentDateDJ);
 }
 
 // present future conditions for the city
 // present 5 day forecast displaying date, icon rep of weather conditions, the temperature, the wind speed, and the humidity
-function fiveDayForecast() {
-  console.log(searchInput.value);
-  const queryForecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${searchInput.value}&appid=${apiKey}&units=metric`;
+function fiveDayForecast(locations) {
+  const queryForecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${locations}&appid=${apiKey}&units=metric`;
   // test API works:https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=45eb4c20171c3bd2b2a402297a8c7fea
+  console.log(queryForecastURL);
   fetch(queryForecastURL)
     .then(function (response) {
       console.log(response);
@@ -87,11 +71,17 @@ var futureForecast = document.getElementById("future-forecast");
 
 function displayFuture(data) {
   console.log(data);
+  //need data to be pulled from list number 8, 16, 24, 32, 40 for days 1,2,3,4,5 respectively:
+  // dataArray = data()
+  //var valueAtIndex8 = dataArray[8];
 
-  for (let i = 0; i < 5; i++) {
-    const dateElement = document.createElement("h4");
-    dateElement.innerText = "Date: " + data.list[i].dt_txt;
+  for (let i = 0; i < data.length; i + 8) {
+    var dateElement = document.createElement("h4");
+    var dateData = data.list[i].dt_txt;
     console.log(data.list[i].dt_txt);
+    var dateElementConverted = dayjs(dateData).format("DD MMMM YYYY, hh:mm");
+    console.log(dateElementConverted);
+    dateElement.innerText = "Date: " + dateElementConverted;
     document.getElementById("future-forecast").appendChild(dateElement);
 
     //create an element for the icon:
@@ -108,7 +98,7 @@ function displayFuture(data) {
 
     const tempElementFuture = document.createElement("h4");
     tempElementFuture.innerText =
-      "Temperature (Celsius): " + data.list[i].main.temp;
+      "Temperature: " + data.list[i].main.temp + "℃";
     document.getElementById("future-forecast").appendChild(tempElementFuture);
 
     const futureWindElement = document.createElement("h4");
@@ -120,6 +110,11 @@ function displayFuture(data) {
     futureHumidElement.innerText =
       "Humidity level (%): " + data.list[i].main.humidity;
     document.getElementById("future-forecast").appendChild(futureHumidElement);
+    linebreak = document.createElement("br");
+    document.getElementById("future-forecast").appendChild(linebreak);
+    linebreak = document.createElement("br");
+    document.getElementById("future-forecast").appendChild(linebreak);
+
     data.list[i].main;
     console.log(data.list[i].main);
   }
@@ -137,52 +132,90 @@ function displayFuture(data) {
 //     displayMessage("Error", "Search cannot be blank");
 //   } else {
 //     localStorage.setItem("userInput", userInput);
-//     renderLastSearch();
+//     renderSearchHistory();
 //   }
 // });
 
 //local storage: saved-search
 
-const displaySearch = document.getElementById("recentSearches");
+const displaySearch = document.getElementById("recent-searches");
 //function to render last search:
-function renderLastSearch() {
+function renderSearchHistory() {
+  // event.preventDefault();
   var lastSearch = JSON.parse(localStorage.getItem("saved-search"));
   console.log(lastSearch);
-  // if (lastSearch !== null) {
-  displaySearch.innerHTML = lastSearch;
-  // } else {
-  // return;}
+
+  // displaySearch.innerHTML = lastSearch;
+
+  if (lastSearch) {
+    var searchHistory = document.createElement("button");
+    //add class name for CSS styling:
+    searchHistory.classList.add(
+      "Search-btn",
+      "button",
+      "is-danger",
+      "is-medium",
+      "is-fullwidth",
+      "is-outlied",
+      "is-rounded",
+      "is-hovered"
+    );
+    searchHistory.setAttribute("search-location", lastSearch);
+    searchHistory.innerHTML = lastSearch;
+    //append to HTML ID recent-searches
+    displaySearch.appendChild(searchHistory);
+    linebreak = document.createElement("br");
+    document.getElementById("recent-searches").appendChild(linebreak);
+  } else {
+    alert("Please enter in a city location");
+  }
 }
-//use this function to call the last search:
-// function init() {
-//   renderLastSearch();
-// }
-// init();
 
-// // const userInput = searchInput.value;
+function handleSearchHistory(e) {
+  var searchBtn = e.target;
+  console.log(searchBtn);
+  var search = searchBtn.getAttribute("search-location");
+  console.log(search);
+  fetchAPI(search);
+}
+//load past location searches:
 
-// function saveLastSearch() {
-//   console.log(userInput);
-//   var saveSearch = userInput.value;
-//   localStorage.setItem("saved-search", JSON.stringify(saveSearch));
-//   console.log(saveSearch);
-// }
+loadHistory = function () {
+  searchArray = JSON.parse(localStorage.getItem("search-location"));
+  if (searchArray) {
+    searchHistoryArray = JSON.parse(localStorage.getItem("search-location"));
+    for (let i = 0; i < searchArray.length; i++) {
+      //create element for the search history
+      var searchHistory = document.createElement("button");
+      //class name to call for CSS:
+      // searchHistory.classList.add(
+      //   "Search-btn     );
+      searchHistory.setAttribute("search-location", searchArray[i]);
+      searchHistory.innerHTML = searchArray[i];
+      displaySearch.appendChild(searchHistory);
+    }
+  }
+};
 
-// function to save search
-// function saveLastSearch() {
-//   var searchSave = displaySearch.value;
-//   console.log(searchSave);
-//   localStorage.setItem("searchSave", JSON.stringify(searchSave));
-// }
+submitButton.addEventListener("click", function (event) {
+  event.preventDefault();
+  const userInput = searchInput.value;
+  console.log(userInput);
+  // const userInput = searchInput.value;
 
-// //function to render last search:
-// function renderLastSearch() {
+  //save to localstorage:
+  localStorage.setItem("saved-search", JSON.stringify(userInput));
+  console.log(userInput);
 
-//   var userInput = cityName;
-//   console.log(userInput);
-//   localStorage.setItem("userInput", userInput);
+  fetchAPI(searchInput.value);
+  fiveDayForecast(searchInput.value);
+  // saveLastSearch();
+  renderSearchHistory();
+});
 
-//   var search = localStorage.getItem("userInput");
-//   console.log(search);
-//   displaySearch.textContent = search;
-// }
+displaySearch.addEventListener("click", handleSearchHistory);
+
+//click event to rerun last search button through API ?
+
+// const userInput = searchInput.value;
+// assign selected recent search button to value of userInput?

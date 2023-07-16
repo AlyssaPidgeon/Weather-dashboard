@@ -1,4 +1,4 @@
-body {
+/* body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 18px;
 }
@@ -16,9 +16,9 @@ h1 {
   border-radius: 0.25em;
 } */
 
-/*Bulma class button code: */
-.bulma-control-mixin {
+/* Bulma class button code: */
+/* .bulma-control-mixin {
   @include control;
   background: #3273dc;
-  color: white;
-}
+  color: ;
+} */
