@@ -37,11 +37,7 @@ function displayCurrent(data) {
   console.log(icon);
   var url = `https://openweathermap.org/img/wn/${icon}@2x.png`;
   imageCurrentWeather.setAttribute("src", url);
-
-  // test url : https://openweathermap.org/img/wn/10d@2x.png
-
   console.log(url);
-  //
   temperature.innerText = "Temperature: " + data.main.temp + "℃";
   wind.innerText = "Wind Speed (meter/second): " + data.wind.speed;
   humidity.innerText = "Humidity (%): " + data.main.humidity;
@@ -52,10 +48,10 @@ function displayCurrent(data) {
 
 // present future conditions for the city
 // present 5 day forecast displaying date, icon rep of weather conditions, the temperature, the wind speed, and the humidity
-function fiveDayForecast(locations) {
-  const queryForecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${locations}&appid=${apiKey}&units=metric`;
-  // test API works:https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=45eb4c20171c3bd2b2a402297a8c7fea
-  console.log(queryForecastURL);
+function fiveDayForecast(coordinates) {
+  console.log(coordinates);
+  const queryForecastURL = `https://api.openweathermap.org/data/2.5/forecast?q=${coordinates}&appid=${apiKey}&units=metric`;
+
   fetch(queryForecastURL)
     .then(function (response) {
       console.log(response);
@@ -71,42 +67,38 @@ var futureForecast = document.getElementById("future-forecast");
 
 function displayFuture(data) {
   console.log(data);
+  document.getElementById("future-forecast").innerHTML = "";
   //need data to be pulled from list number 8, 16, 24, 32, 40 for days 1,2,3,4,5 respectively:
-  // dataArray = data()
-  //var valueAtIndex8 = dataArray[8];
 
-  for (let i = 0; i < data.length; i + 8) {
+  for (let i = 0; i < data.list.length; i = i + 8) {
     var dateElement = document.createElement("h4");
     var dateData = data.list[i].dt_txt;
     console.log(data.list[i].dt_txt);
     var dateElementConverted = dayjs(dateData).format("DD MMMM YYYY, hh:mm");
-    console.log(dateElementConverted);
     dateElement.innerText = "Date: " + dateElementConverted;
     document.getElementById("future-forecast").appendChild(dateElement);
 
     //create an element for the icon:
-    const futureIconElement = document.createElement("img");
-
+    var futureIconElement = document.createElement("img");
     futureIconElement.alt = "Weather image icon";
     //create variable to access data point with index
-    const futureIcon = data.list[i].weather[0].icon;
-    console.log(futureIcon);
+    var futureIcon = data.list[i].weather[0].icon;
     var futureUrl = `https://openweathermap.org/img/wn/${futureIcon}@2x.png`;
     futureIconElement.setAttribute("src", futureUrl);
     console.log(futureIconElement);
     document.getElementById("future-forecast").appendChild(futureIconElement);
 
-    const tempElementFuture = document.createElement("h4");
+    var tempElementFuture = document.createElement("h4");
     tempElementFuture.innerText =
       "Temperature: " + data.list[i].main.temp + "℃";
     document.getElementById("future-forecast").appendChild(tempElementFuture);
 
-    const futureWindElement = document.createElement("h4");
+    var futureWindElement = document.createElement("h4");
     futureWindElement.innerText =
       "Wind Speed (meter/second): " + data.list[i].wind.speed;
     document.getElementById("future-forecast").appendChild(futureWindElement);
 
-    const futureHumidElement = document.createElement("h4");
+    var futureHumidElement = document.createElement("h4");
     futureHumidElement.innerText =
       "Humidity level (%): " + data.list[i].main.humidity;
     document.getElementById("future-forecast").appendChild(futureHumidElement);
@@ -114,29 +106,8 @@ function displayFuture(data) {
     document.getElementById("future-forecast").appendChild(linebreak);
     linebreak = document.createElement("br");
     document.getElementById("future-forecast").appendChild(linebreak);
-
-    data.list[i].main;
-    console.log(data.list[i].main);
   }
 }
-
-// //search history - able to click on city in search history to present current and future conditions.
-// const displaySearch = document.getElementById("#recentSearches");
-
-// //searchInput -is document selection for userInput
-
-//event listener to save search from userInput:
-// searchInput.addEventListener("click", function (event) {
-//   console.log(userInput);
-//   if (userInput === "") {
-//     displayMessage("Error", "Search cannot be blank");
-//   } else {
-//     localStorage.setItem("userInput", userInput);
-//     renderSearchHistory();
-//   }
-// });
-
-//local storage: saved-search
 
 const displaySearch = document.getElementById("recent-searches");
 //function to render last search:
@@ -177,9 +148,9 @@ function handleSearchHistory(e) {
   var search = searchBtn.getAttribute("search-location");
   console.log(search);
   fetchAPI(search);
+  fiveDayForecast(search);
 }
 //load past location searches:
-
 loadHistory = function () {
   searchArray = JSON.parse(localStorage.getItem("search-location"));
   if (searchArray) {
@@ -187,9 +158,7 @@ loadHistory = function () {
     for (let i = 0; i < searchArray.length; i++) {
       //create element for the search history
       var searchHistory = document.createElement("button");
-      //class name to call for CSS:
-      // searchHistory.classList.add(
-      //   "Search-btn     );
+
       searchHistory.setAttribute("search-location", searchArray[i]);
       searchHistory.innerHTML = searchArray[i];
       displaySearch.appendChild(searchHistory);
@@ -199,23 +168,15 @@ loadHistory = function () {
 
 submitButton.addEventListener("click", function (event) {
   event.preventDefault();
-  const userInput = searchInput.value;
+  var userInput = searchInput.value;
   console.log(userInput);
-  // const userInput = searchInput.value;
 
   //save to localstorage:
   localStorage.setItem("saved-search", JSON.stringify(userInput));
   console.log(userInput);
-
   fetchAPI(searchInput.value);
   fiveDayForecast(searchInput.value);
-  // saveLastSearch();
   renderSearchHistory();
 });
 
 displaySearch.addEventListener("click", handleSearchHistory);
-
-//click event to rerun last search button through API ?
-
-// const userInput = searchInput.value;
-// assign selected recent search button to value of userInput?
